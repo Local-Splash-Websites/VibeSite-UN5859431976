@@ -6,10 +6,16 @@ ErrorDocument 404 /404.html
 
 RewriteEngine On
 
-# Force HTTPS and www
-RewriteCond %{HTTPS} off [OR]
-RewriteCond %{HTTP_HOST} !^www\. [NC]
+# Force HTTPS and www.
+# TLS may end at a proxy (Coolify/LS Deploy), so X-Forwarded-Proto: https also counts as HTTPS.
+# Internal preview hosts (*.site.localsplash.ai) and localhost are never redirected.
+RewriteCond %{HTTPS} on [OR]
+RewriteCond %{HTTP:X-Forwarded-Proto} ^https$ [NC]
+RewriteRule ^ - [E=IS_HTTPS:1]
+RewriteCond %{HTTP_HOST} !\.site\.localsplash\.ai$ [NC]
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+RewriteCond %{ENV:IS_HTTPS} !^1$ [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
 RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
 RewriteRule ^ https://www.%1%{REQUEST_URI} [R=301,L]
 
