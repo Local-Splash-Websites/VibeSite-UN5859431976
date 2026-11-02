@@ -1,4 +1,4 @@
-# Static copy of truebuiltgroupllc.com. HTTPS and www are handled by the proxy in front of this
+# Static copy of a Duda site. HTTPS and www are handled by the proxy in front of this
 # container, so there is no https/www redirect here.
 
 Options -Indexes -MultiViews
@@ -8,6 +8,13 @@ RewriteEngine On
 
 # The copied Duda forms post to Duda's form endpoint; handle them locally.
 RewriteRule ^_dm/s/rt/actions/form/ lead-webhook.php [L]
+
+# Duda's font stylesheet varies only by query; serve the copy saved for that query.
+RewriteRule ^_d/irp\.cdn-website\.com/fonts/css2$ fonts-css2.php [L]
+
+# Image sizes Duda's runtime picks at run time that were not copied: serve the closest copied size.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^_d/irp\.cdn-website\.com/.+\.(png|jpe?g|webp|gif)$ img-fallback.php [L,NC]
 
 # Clean URLs: /about.html -> /about, and serve /about from about.html
 RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
