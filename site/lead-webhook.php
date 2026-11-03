@@ -34,7 +34,7 @@ function respond(bool $ok, int $code, string $error = '', array $submitted = [])
         header('Content-Type: application/json');
         echo json_encode($ok
             ? ['renderedElements' => [''], 'actionResult' => 'submitted', 'submittedFields' => $submitted]
-            : ['renderedElements' => [], 'actionResult' => 'error']);
+            : ['renderedElements' => [], 'actionResult' => 'error', 'message' => $error]);
         exit;
     }
     http_response_code($code);
