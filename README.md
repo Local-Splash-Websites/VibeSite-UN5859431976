@@ -14,9 +14,11 @@ served without Duda.
 
 The copied Duda forms post JSON to `/_dm/s/rt/actions/form/<id>`. `.htaccess` sends that to
 `site/lead-webhook.php`, which maps the field ids to labels with `form-fields.json`, forwards the
-lead to `LEADS_API_URL` (see `.env.example`) and answers in Duda's format, so the form goes on to
-`/thank-you` as before. Without `LEADS_API_URL` the form shows its error message and nothing is sent.
+lead to the shared lead service at `LEADS_SERVICE_URL/v1/lead` (see `.env.example`) and answers in Duda's
+format, so the form goes on to its thank-you page as before. The lead service finds the site in Deploy's
+site registry (RelevantAds site_name UN5859431976). Without `LEADS_SERVICE_URL` the form shows its error
+message and nothing is sent.
 
 ## Run
 
-    docker build -t truebuilt . && docker run -p 8080:80 -e LEADS_SITE_NAME=d8e4a61f truebuilt
+    docker build -t truebuilt . && docker run -p 8080:80 -e LEADS_SERVICE_URL=http://website-lead-submit:8080 truebuilt
